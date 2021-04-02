@@ -1,16 +1,37 @@
 import { Jogador } from './interfaces/jogador.interface';
 
-import { Body, Controller, Delete, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, ForbiddenException, Get, Post, Query, UseFilters, UsePipes, ValidationPipe, HttpStatus, Res, HttpCode } from '@nestjs/common';
 import { CriarJogadorDto } from './dtos/criar-jogador.dto';
 import { JogadoresService } from './jogadores.service';
+import { HttpExceptionFilter } from 'src/http-exception.filter';
+import { Error } from 'mongoose';
+
 
 @Controller('api/v1/jogadores')
 export class JogadoresController {
   constructor(private readonly jogadoresService: JogadoresService) {}
 
   @Post()
+  @UsePipes(ValidationPipe)
+  @HttpCode(20)
+  @UseFilters(new HttpExceptionFilter())
   async creiarAtualizarJogador(@Body() criarJogadorDto: CriarJogadorDto) {
-    this.jogadoresService.criarAtualizarJogador(criarJogadorDto);
+    
+    const result  = this.jogadoresService.criarAtualizarJogador(criarJogadorDto);
+    result.then(
+      (value) => {
+         value
+      }
+    ).catch(
+      (Error) => {
+        
+        
+        throw new ForbiddenException();
+     
+
+      }
+    );
+    
   }
   @Get()
   async listaJogador(

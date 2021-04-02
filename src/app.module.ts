@@ -1,7 +1,8 @@
-import { Module } from '@nestjs/common';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { JogadoresModule } from './jogadores/jogadores.module';
 import { MongooseModule } from '@nestjs/mongoose';
-
+import { APP_FILTER, APP_PIPE } from '@nestjs/core';
+import { HttpExceptionFilter } from './http-exception.filter';
 @Module({
   imports: [
     MongooseModule.forRoot(
@@ -14,6 +15,17 @@ import { MongooseModule } from '@nestjs/mongoose';
       },
     ),
     JogadoresModule,
+    
+  ],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    },
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe,
+    },
   ],
 })
 export class AppModule {}
