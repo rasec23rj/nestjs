@@ -15,7 +15,6 @@ import { HttpExceptionFilter } from './http-exception.filter';
       },
     ),
     JogadoresModule,
-    
   ],
   providers: [
     {
